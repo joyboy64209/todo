@@ -1,0 +1,11 @@
+0000000000000000000000000000000000000000 6dc092a265a97be2bfd63887f1c442c0b3342bec joyboy64209 <nahom.d97@gmail.com> 1784548313 +0300	branch: Created from HEAD
+6dc092a265a97be2bfd63887f1c442c0b3342bec a2fe3de4d77bb7d0cd6d39390eb36d67fa830698 joyboy64209 <nahom.d97@gmail.com> 1784549507 +0300	commit: Move-description-to-collapsible-section-in-todo-list-items
+a2fe3de4d77bb7d0cd6d39390eb36d67fa830698 d909a8455ddc3e40f5723c886bd4a0f896bea85f joyboy64209 <nahom.d97@gmail.com> 1784554427 +0300	commit: Prepare-for-Vercel-deployment
+d909a8455ddc3e40f5723c886bd4a0f896bea85f c6d287ca7e712a88504d32fcda0e0c6fe866d8c1 joyboy64209 <nahom.d97@gmail.com> 1784555329 +0300	commit: Switch-database-to-Neon-and-prepare-for-Vercel-deployment
+c6d287ca7e712a88504d32fcda0e0c6fe866d8c1 f84f0cf84aa584e3bad411d226f853fd121e4cd9 joyboy64209 <nahom.d97@gmail.com> 1784555930 +0300	commit: Update-vercel-json-version-to-2
+f84f0cf84aa584e3bad411d226f853fd121e4cd9 fa5f936370e9e10b9e599626a6c1d57415fa7c07 joyboy64209 <nahom.d97@gmail.com> 1784556550 +0300	commit: Add-frontend-vercel-json-for-SPA-routing
+fa5f936370e9e10b9e599626a6c1d57415fa7c07 d0aab5072515d1681d22232e70355fc3469deb5a joyboy64209 <nahom.d97@gmail.com> 1784558019 +0300	commit: Use-relative-API-path-and-add-frontend-proxy-rewrite
+d0aab5072515d1681d22232e70355fc3469deb5a a4cff79fded43cb587efb579300a8cc797a6a21f joyboy64209 <nahom.d97@gmail.com> 1784558445 +0300	commit: Add-root-vercel-json-for-multi-service-deployment
+a4cff79fded43cb587efb579300a8cc797a6a21f 70563edb21e63469ee9867468c9dae430803beda joyboy64209 <nahom.d97@gmail.com> 1784558873 +0300	commit: Fix-backend-vercel-json-entrypoint-for-NestJS
+70563edb21e63469ee9867468c9dae430803beda 89e3b6605adf03a9cdf8a82d7dca5f23e3911d8b joyboy64209 <nahom.d97@gmail.com> 1784559233 +0300	commit: Remove-backend-vercel-json-for-zero-config-NestJS
+89e3b6605adf03a9cdf8a82d7dca5f23e3911d8b a94ec031e3b346615e235f83ddfd53208b5ca3e9 joyboy64209 <nahom.d97@gmail.com> 1784559727 +0300	commit: Split-into-independent-Vercel-projects
