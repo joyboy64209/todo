@@ -7,15 +7,17 @@ export interface Todo {
   updatedAt: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 export const todoService = {
   async getAll(): Promise<Todo[]> {
-    const response = await fetch('http://localhost:3000/todo');
+    const response = await fetch(`${API_URL}/todo`);
     if (!response.ok) throw new Error('Failed to fetch tasks');
     return response.json();
   },
 
   async create(title: string, description: string): Promise<Todo> {
-    const response = await fetch('http://localhost:3000/todo', {
+    const response = await fetch(`${API_URL}/todo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, description }),
@@ -25,7 +27,7 @@ export const todoService = {
   },
 
   async update(id: number, data: Partial<{ title: string; description: string; completed: boolean }>): Promise<Todo> {
-    const response = await fetch(`http://localhost:3000/todo/${id}`, {
+    const response = await fetch(`${API_URL}/todo/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -35,7 +37,7 @@ export const todoService = {
   },
 
   async delete(id: number): Promise<void> {
-    const response = await fetch(`http://localhost:3000/todo/${id}`, {
+    const response = await fetch(`${API_URL}/todo/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete task');
