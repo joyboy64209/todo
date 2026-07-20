@@ -7,17 +7,15 @@ export interface Todo {
   updatedAt: string;
 }
 
-const API_URL = '/api';
-
 export const todoService = {
   async getAll(): Promise<Todo[]> {
-    const response = await fetch(`${API_URL}/todo`);
+    const response = await fetch('http://localhost:3000/todo');
     if (!response.ok) throw new Error('Failed to fetch tasks');
     return response.json();
   },
 
   async create(title: string, description: string): Promise<Todo> {
-    const response = await fetch(`${API_URL}/todo`, {
+    const response = await fetch('http://localhost:3000/todo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, description }),
@@ -27,7 +25,7 @@ export const todoService = {
   },
 
   async update(id: number, data: Partial<{ title: string; description: string; completed: boolean }>): Promise<Todo> {
-    const response = await fetch(`${API_URL}/todo/${id}`, {
+    const response = await fetch(`http://localhost:3000/todo/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -37,7 +35,7 @@ export const todoService = {
   },
 
   async delete(id: number): Promise<void> {
-    const response = await fetch(`${API_URL}/todo/${id}`, {
+    const response = await fetch(`http://localhost:3000/todo/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete task');
