@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173',
-      'https://todo-orcin-mu-46.vercel.app',
+      'https://todo-frontend-app.vercel.app',
     ],
   });
 
