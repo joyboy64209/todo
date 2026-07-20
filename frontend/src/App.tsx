@@ -4,11 +4,12 @@ import { todoService, Todo } from './services/api';
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [expandedDescId, setExpandedDescId] = useState<number | null>(null);
+  const [descInputValue, setDescInputValue] = useState('');
 
   const fetchTodos = async () => {
     try {
@@ -29,10 +30,9 @@ export default function App() {
     e.preventDefault();
     if (!title.trim()) return;
     try {
-      const newTodo = await todoService.create(title, description);
+      const newTodo = await todoService.create(title, '');
       setTodos((prev) => [newTodo, ...prev]);
       setTitle('');
-      setDescription('');
     } catch (error) {
       console.error('Error creating todo:', error);
     }
@@ -86,6 +86,31 @@ export default function App() {
     }
   };
 
+  const toggleDescription = (id: number, currentDesc: string | null) => {
+    if (expandedDescId === id) {
+      setExpandedDescId(null);
+      setDescInputValue('');
+    } else {
+      setExpandedDescId(id);
+      setDescInputValue(currentDesc || '');
+    }
+  };
+
+  const handleSaveDescription = async (id: number) => {
+    try {
+      const updatedTodo = await todoService.update(id, {
+        description: descInputValue || undefined,
+      });
+      setTodos((prev) =>
+        prev.map((todo) => (todo.id === id ? updatedTodo : todo))
+      );
+      setExpandedDescId(null);
+      setDescInputValue('');
+    } catch (error) {
+      console.error('Error saving description:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-900">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -110,18 +135,6 @@ export default function App() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="What needs to be done?"
               className="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/50"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Description (Optional)
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add some details..."
-              rows={2}
-              className="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/50 resize-none"
             />
           </div>
           <button
@@ -208,12 +221,22 @@ export default function App() {
                           >
                             {todo.title}
                           </h3>
+                          {/* Chevron to expand/collapse description */}
+                          <button
+                            onClick={() => toggleDescription(todo.id, todo.description)}
+                            className="text-slate-500 hover:text-slate-300 transition-colors cursor-pointer shrink-0"
+                            title={expandedDescId === todo.id ? "Collapse" : "Add or view description"}
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform duration-300 ${expandedDescId === todo.id ? "rotate-180 text-emerald-400" : ""}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
                         </div>
-                        {todo.description && (
-                          <p className="text-sm text-slate-400 mt-1.5 ml-7 whitespace-pre-wrap">
-                            {todo.description}
-                          </p>
-                        )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <button
@@ -235,6 +258,43 @@ export default function App() {
                           </svg>
                         </button>
                       </div>
+                    </div>
+                    {/* Collapsible description section */}
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        expandedDescId === todo.id ? "max-h-40 mt-3" : "max-h-0"
+                      }`}
+                    >
+                      {todo.description ? (
+                        <div className="space-y-2">
+                          <p className="text-sm text-slate-400 whitespace-pre-wrap leading-relaxed bg-slate-900/30 rounded-lg p-3 border border-slate-700/40">
+                            {todo.description}
+                          </p>
+                          <button
+                            onClick={() => { setExpandedDescId(todo.id); setDescInputValue(todo.description || ''); }}
+                            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                          >
+                            Edit description
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <textarea
+                            value={descInputValue}
+                            onChange={(e) => setDescInputValue(e.target.value)}
+                            placeholder="Add a description..."
+                            rows={2}
+                            className="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400 resize-none"
+                          />
+                          <button
+                            onClick={() => handleSaveDescription(todo.id)}
+                            disabled={!descInputValue.trim()}
+                            className="text-xs bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 font-semibold py-1.5 px-3 rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed"
+                          >
+                            Save Description
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
