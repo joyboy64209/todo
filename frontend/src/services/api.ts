@@ -1,43 +1,51 @@
-export interface Todo {
-  id: number;
-  title: string;
-  description: string | null;
-  completed: boolean;
-  createdAt: string;
-  updatedAt: string;
+import type { Todo } from '../types/todo';
+
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+export interface TodoUpdate {
+  title?: string;
+  description?: string;
+  completed?: boolean;
+}
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, options);
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return response.json();
 }
 
 export const todoService = {
   async getAll(): Promise<Todo[]> {
-    const response = await fetch('http://localhost:3000/todo');
-    if (!response.ok) throw new Error('Failed to fetch tasks');
-    return response.json();
+    return request<Todo[]>('/todo');
   },
 
   async create(title: string, description: string): Promise<Todo> {
-    const response = await fetch('http://localhost:3000/todo', {
+    return request<Todo>('/todo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, description }),
     });
-    if (!response.ok) throw new Error('Failed to create task');
-    return response.json();
   },
 
-  async update(id: number, data: Partial<{ title: string; description: string; completed: boolean }>): Promise<Todo> {
-    const response = await fetch(`http://localhost:3000/todo/${id}`, {
+  async update(id: number, data: TodoUpdate): Promise<Todo> {
+    return request<Todo>(`/todo/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to update task');
-    return response.json();
   },
 
   async delete(id: number): Promise<void> {
-    const response = await fetch(`http://localhost:3000/todo/${id}`, {
+    await request<void>(`/todo/${id}`, {
       method: 'DELETE',
     });
-    if (!response.ok) throw new Error('Failed to delete task');
   },
 };
