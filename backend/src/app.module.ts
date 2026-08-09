@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TodoModule } from './todo/todo.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [TodoModule, PrismaModule],
+  imports: [TodoModule, PrismaModule, AuthModule],
 })
 export class AppModule {}
