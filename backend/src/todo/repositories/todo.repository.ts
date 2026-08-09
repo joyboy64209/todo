@@ -8,39 +8,58 @@ import { UpdateTodoDto } from '../dto/update-todo.dto';
 export class TodoRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createTodoDto: CreateTodoDto): Promise<TodoEntity> {
+  async create(userId: number, createTodoDto: CreateTodoDto): Promise<TodoEntity> {
     return this.prisma.todo.create({
       data: {
         // Validated by the global ValidationPipe before reaching the repository.
         title: createTodoDto.title as string,
         description: createTodoDto.description,
+        userId,
       },
     });
   }
 
-  async findAll(): Promise<TodoEntity[]> {
+  async findAll(userId: number): Promise<TodoEntity[]> {
     return this.prisma.todo.findMany({
+      where: { userId },
       orderBy: { id: 'desc' },
     });
   }
 
-  async findById(id: number): Promise<TodoEntity | null> {
-    return this.prisma.todo.findUnique({
-      where: { id },
+  async findById(id: number, userId: number): Promise<TodoEntity | null> {
+    return this.prisma.todo.findFirst({
+      where: { id, userId },
     });
   }
 
   async update(
     id: number,
+    userId: number,
     updateTodoDto: UpdateTodoDto,
-  ): Promise<TodoEntity> {
+  ): Promise<TodoEntity | null> {
+    const todo = await this.prisma.todo.findFirst({
+      where: { id, userId },
+    });
+
+    if (!todo) {
+      return null;
+    }
+
     return this.prisma.todo.update({
       where: { id },
       data: updateTodoDto,
     });
   }
 
-  async delete(id: number): Promise<TodoEntity> {
+  async delete(id: number, userId: number): Promise<TodoEntity | null> {
+    const todo = await this.prisma.todo.findFirst({
+      where: { id, userId },
+    });
+
+    if (!todo) {
+      return null;
+    }
+
     return this.prisma.todo.delete({
       where: { id },
     });

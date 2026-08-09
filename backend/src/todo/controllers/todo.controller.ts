@@ -1,34 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
+interface AuthenticatedRequest extends Request {
+  user: { id: number; email: string };
+}
+
+@UseGuards(JwtAuthGuard)
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+  create(@Req() req: AuthenticatedRequest, @Body() createTodoDto: CreateTodoDto) {
+    return this.todoService.create(req.user.id, createTodoDto);
   }
 
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.todoService.findAll(req.user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todoService.findOne(+id);
+  findOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.todoService.findOne(+id, req.user.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(+id, updateTodoDto);
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
+    return this.todoService.update(+id, req.user.id, updateTodoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.todoService.remove(+id, req.user.id);
   }
 }

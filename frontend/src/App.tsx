@@ -1,15 +1,41 @@
+import { useState } from 'react';
+import { AuthProvider, useAuthContext } from './auth/AuthContext';
 import { useTodos } from './hooks/useTodos';
 import TodoHeader from './components/TodoHeader';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
-export default function App() {
+function AuthScreen() {
+  const [showLogin, setShowLogin] = useState(true);
+
+  if (showLogin) {
+    return <LoginForm onSwitchToRegister={() => setShowLogin(false)} />;
+  }
+
+  return <RegisterForm onSwitchToLogin={() => setShowLogin(true)} />;
+}
+
+function TodoApp() {
+  const { user, logout } = useAuthContext();
   const todo = useTodos();
 
   return (
     <div className="min-h-screen bg-slate-900">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <TodoHeader />
+        <div className="flex justify-between items-center mb-4">
+          <TodoHeader />
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-400">{user?.email}</span>
+            <button
+              onClick={logout}
+              className="text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 py-1 px-3 rounded-lg transition-all cursor-pointer"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
         <TodoForm
           title={todo.title}
           onTitleChange={todo.setTitle}
@@ -40,5 +66,19 @@ export default function App() {
         </footer>
       </div>
     </div>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated } = useAuthContext();
+
+  return isAuthenticated ? <TodoApp /> : <AuthScreen />;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

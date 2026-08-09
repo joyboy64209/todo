@@ -1,4 +1,5 @@
 import type { Todo } from '../types/todo';
+import { authService } from './auth';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -9,7 +10,13 @@ export interface TodoUpdate {
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, options);
+  const token = authService.getToken();
+  const headers: Record<string, string> = {
+    ...(options?.headers as Record<string, string> | undefined),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
 
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status} ${response.statusText}`);

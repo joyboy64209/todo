@@ -5,4 +5,5 @@ export interface TodoEntity {
   completed: boolean;
   createdAt: Date;
   updatedAt: Date;
+  userId: number;
 }
