@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { UserRepository } from './repositories/user.repository';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
       secret: process.env.JWT_SECRET ?? 'todo-default-secret-change-me',
       signOptions: { expiresIn: '7d' },
     }),
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, UserRepository, JwtStrategy, JwtAuthGuard],

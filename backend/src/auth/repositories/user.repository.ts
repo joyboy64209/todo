@@ -28,4 +28,25 @@ export class UserRepository {
       },
     });
   }
+
+  async setOtp(userId: number, otpCode: string, otpExpiresAt: Date): Promise<UserEntity> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { otpCode, otpExpiresAt },
+    });
+  }
+
+  async clearOtp(userId: number): Promise<UserEntity> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { otpCode: null, otpExpiresAt: null },
+    });
+  }
+
+  async markVerified(userId: number): Promise<UserEntity> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { isVerified: true },
+    });
+  }
 }

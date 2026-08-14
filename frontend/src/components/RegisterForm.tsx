@@ -3,9 +3,10 @@ import { useAuthContext } from '../auth/AuthContext';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
+  onRegistered: (email: string) => void;
 }
 
-export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
+export default function RegisterForm({ onSwitchToLogin, onRegistered }: RegisterFormProps) {
   const { register, loading, error } = useAuthContext();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,7 +14,11 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await register({ name: name || undefined, email, password });
+    const registeredEmail = await register({ name: name || undefined, email, password });
+
+    if (registeredEmail) {
+      onRegistered(registeredEmail);
+    }
   };
 
   return (

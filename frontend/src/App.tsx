@@ -6,15 +6,36 @@ import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import OtpVerificationForm from './components/OtpVerificationForm';
+
+type AuthView = 'login' | 'register' | 'otp';
 
 function AuthScreen() {
-  const [showLogin, setShowLogin] = useState(true);
+  const [view, setView] = useState<AuthView>('login');
+  const [pendingEmail, setPendingEmail] = useState('');
 
-  if (showLogin) {
-    return <LoginForm onSwitchToRegister={() => setShowLogin(false)} />;
+  if (view === 'register') {
+    return (
+      <RegisterForm
+        onSwitchToLogin={() => setView('login')}
+        onRegistered={(email) => {
+          setPendingEmail(email);
+          setView('otp');
+        }}
+      />
+    );
   }
 
-  return <RegisterForm onSwitchToLogin={() => setShowLogin(true)} />;
+  if (view === 'otp') {
+    return (
+      <OtpVerificationForm
+        email={pendingEmail}
+        onBack={() => setView('register')}
+      />
+    );
+  }
+
+  return <LoginForm onSwitchToRegister={() => setView('register')} />;
 }
 
 function TodoApp() {

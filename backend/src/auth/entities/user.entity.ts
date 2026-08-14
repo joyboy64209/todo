@@ -3,5 +3,8 @@ export interface UserEntity {
   email: string;
   passwordHash: string;
   name: string | null;
+  isVerified: boolean;
+  otpCode: string | null;
+  otpExpiresAt: Date | null;
   createdAt: Date;
 }

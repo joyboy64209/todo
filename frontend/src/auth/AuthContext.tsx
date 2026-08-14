@@ -8,7 +8,9 @@ interface AuthContextValue {
   error: string | null;
   isAuthenticated: boolean;
   login: (input: LoginInput) => Promise<void>;
-  register: (input: RegisterInput) => Promise<void>;
+  register: (input: RegisterInput) => Promise<string | null>;
+  verifyOtp: (email: string, otp: string) => Promise<boolean>;
+  resendOtp: (email: string) => Promise<void>;
   logout: () => void;
 }
 
