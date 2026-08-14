@@ -49,4 +49,10 @@ export class UserRepository {
       data: { isVerified: true },
     });
   }
+
+  async deleteById(userId: number): Promise<void> {
+    await this.prisma.user.delete({
+      where: { id: userId },
+    });
+  }
 }

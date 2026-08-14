@@ -47,7 +47,13 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(registerDto.password, SALT_ROUNDS);
     const user = await this.userRepository.create(registerDto, passwordHash);
-    await this.sendOtpToUser(user);
+
+    try {
+      await this.sendOtpToUser(user);
+    } catch {
+      await this.userRepository.deleteById(user.id);
+      throw new BadRequestException('Failed to send verification email. Please try again.');
+    }
 
     return { userId: user.id, email: user.email };
   }
